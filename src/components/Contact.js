@@ -6,180 +6,89 @@ const Contact = () => {
     name: '',
     email: '',
     phone: '',
-    service: '',
     message: ''
   });
-
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submitError, setSubmitError] = useState('');
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     setIsSubmitting(true);
     setSubmitError('');
-    
-    try {
-      // E-Mail-Inhalt erstellen
-      const emailSubject = `Neue Anfrage von ${formData.name} - SaveMove Umzüge`;
-      const emailBody = `
-Name: ${formData.name}
-E-Mail: ${formData.email}
-Telefon: ${formData.phone}
-Gewünschte Leistung: ${formData.service}
 
-Nachricht:
-${formData.message}
-
----
-Diese Nachricht wurde über das Kontaktformular auf der SaveMove Umzüge Webseite gesendet.
-      `;
-
-      // E-Mail-Link erstellen (mailto:)
-      const mailtoLink = `mailto:hassanalmohamad47@gmail.com?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
+    // Simuliere Formular-Submission
+    setTimeout(() => {
+      const mailtoLink = `mailto:hassanalmohamad47@gmail.com?subject=Kontaktanfrage von ${encodeURIComponent(formData.name)}&body=${encodeURIComponent(`Name: ${formData.name}\nE-Mail: ${formData.email}\nTelefon: ${formData.phone}\n\nNachricht:\n${formData.message}`)}`;
       
-      // E-Mail-Client öffnen
-      window.open(mailtoLink);
+      window.location.href = mailtoLink;
       
-      // Erfolg anzeigen
-      setSubmitSuccess(true);
-      setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        service: '',
-        message: ''
-      });
-      
-      // Erfolgsmeldung nach 5 Sekunden zurücksetzen
-      setTimeout(() => {
-        setSubmitSuccess(false);
-      }, 5000);
-      
-    } catch (error) {
-      setSubmitError('Es gab einen Fehler beim Senden der Nachricht. Bitte versuchen Sie es erneut.');
-    } finally {
       setIsSubmitting(false);
-    }
+      setSubmitSuccess(true);
+      setFormData({ name: '', email: '', phone: '', message: '' });
+      
+      setTimeout(() => setSubmitSuccess(false), 5000);
+    }, 1000);
   };
 
-  const contactInfo = [
-    {
-      icon: '📞',
-      title: 'Telefon',
-      value: '+49 177 227 731 8',
-      link: 'tel:+491772277318'
-    },
-    {
-      icon: '📧',
-      title: 'E-Mail',
-      value: 'hassanalmohamad47@gmail.com',
-      link: 'mailto:hassanalmohamad47@gmail.com'
-    },
-    {
-      icon: '📍',
-      title: 'Adresse',
-      value: 'Amendestr 12, 13409 Berlin',
-      link: 'https://maps.google.com'
-    },
-    {
-      icon: '🕒',
-      title: 'Öffnungszeiten',
-      value: 'Mo-Fr: 8:00-18:00, Sa: 9:00-14:00',
-      link: null
-    }
-  ];
+  const whatsappUrl = `https://wa.me/491772277318?text=${encodeURIComponent('Hallo! Ich interessiere mich für Ihre Umzugsdienstleistungen. Können Sie mir mehr Informationen geben?')}`;
 
   return (
     <section id="contact" className="contact">
       <div className="contact-container">
         <div className="contact-header">
-          <h2 className="contact-title">Kontaktieren Sie uns</h2>
-          <p className="contact-subtitle">
-            Lassen Sie uns gemeinsam Ihren perfekten Umzug planen. 
-            Wir sind für Sie da und freuen uns auf Ihre Anfrage.
-          </p>
+          <h2>Kontaktieren Sie uns</h2>
+          <p>Lassen Sie uns gemeinsam Ihren Umzug planen</p>
         </div>
         
         <div className="contact-content">
           <div className="contact-form-section">
-            <h3>Kostenloses Angebot anfordern</h3>
-            {submitSuccess && (
-              <div className="success-message">
-                ✅ Vielen Dank! Ihre Nachricht wurde erfolgreich an hassanalmohamad47@gmail.com gesendet. 
-                Wir melden uns innerhalb von 24 Stunden bei Ihnen.
-              </div>
-            )}
-            {submitError && (
-              <div className="error-message">
-                ❌ {submitError}
-              </div>
-            )}
-            
-            <form className="contact-form" onSubmit={handleSubmit}>
-              <div className="form-row">
-                <div className="form-group">
-                  <label htmlFor="name">Name *</label>
-                  <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    required
-                    placeholder="Ihr vollständiger Name"
-                  />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="email">E-Mail *</label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                    placeholder="ihre.email@beispiel.de"
-                  />
-                </div>
+            <h3>Kontaktformular</h3>
+            <form onSubmit={handleSubmit} className="contact-form">
+              <div className="form-group">
+                <label htmlFor="name">Name *</label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  required
+                  placeholder="Ihr vollständiger Name"
+                />
               </div>
               
-              <div className="form-row">
-                <div className="form-group">
-                  <label htmlFor="phone">Telefon</label>
-                  <input
-                    type="tel"
-                    id="phone"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleChange}
-                    placeholder="+49 177 227 731 8"
-                  />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="service">Gewünschte Leistung</label>
-                  <select
-                    id="service"
-                    name="service"
-                    value={formData.service}
-                    onChange={handleChange}
-                  >
-                    <option value="">Bitte wählen Sie</option>
-                    <option value="privat">Privatumzug</option>
-                    <option value="buero">Büroumzug</option>
-                    <option value="verpackung">Verpackung & Lagerung</option>
-                    <option value="express">Express-Transport</option>
-                    <option value="international">Internationaler Umzug</option>
-                    <option value="kunst">Kunst & Antiquitäten</option>
-                  </select>
-                </div>
+              <div className="form-group">
+                <label htmlFor="email">E-Mail *</label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  required
+                  placeholder="ihre.email@beispiel.de"
+                />
+              </div>
+              
+              <div className="form-group">
+                <label htmlFor="phone">Telefon</label>
+                <input
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleInputChange}
+                  placeholder="+49 123 456 789"
+                />
               </div>
               
               <div className="form-group">
@@ -188,63 +97,89 @@ Diese Nachricht wurde über das Kontaktformular auf der SaveMove Umzüge Webseit
                   id="message"
                   name="message"
                   value={formData.message}
-                  onChange={handleChange}
+                  onChange={handleInputChange}
                   required
                   rows="5"
-                  placeholder="Beschreiben Sie Ihren Umzug und Ihre Wünsche..."
+                  placeholder="Beschreiben Sie Ihren Umzug und Ihre Anforderungen..."
                 ></textarea>
               </div>
               
-              <button 
-                type="submit" 
-                className="submit-btn"
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? 'Wird gesendet...' : 'Angebot anfordern'}
+              <button type="submit" className="submit-btn" disabled={isSubmitting}>
+                {isSubmitting ? 'Wird gesendet...' : 'Nachricht senden'}
               </button>
             </form>
+            
+            {submitSuccess && (
+              <div className="success-message">
+                ✅ Ihre Nachricht wurde erfolgreich gesendet! Wir melden uns innerhalb von 24 Stunden bei Ihnen.
+              </div>
+            )}
+            
+            {submitError && (
+              <div className="error-message">
+                ❌ {submitError}
+              </div>
+            )}
           </div>
           
           <div className="contact-info-section">
-            <h3>Kontaktinformationen</h3>
-            <div className="contact-info">
-              {contactInfo.map((info, index) => (
-                <div key={index} className="contact-item">
-                  <div className="contact-icon">{info.icon}</div>
-                  <div className="contact-details">
-                    <h4>{info.title}</h4>
-                    {info.link ? (
-                      <a href={info.link} className="contact-link">
-                        {info.value}
-                      </a>
-                    ) : (
-                      <span>{info.value}</span>
-                    )}
-                  </div>
+            <h3>Direkter Kontakt</h3>
+            
+            <div className="contact-methods">
+              <div className="contact-method">
+                <div className="contact-icon">📞</div>
+                <div className="contact-details">
+                  <h4>Telefon</h4>
+                  <a href="tel:+491772277318">+49 177 227 731 8</a>
+                  <p>Mo-Fr: 8:00-18:00, Sa: 9:00-14:00</p>
                 </div>
-              ))}
+              </div>
+              
+              <div className="contact-method">
+                <div className="contact-icon">📱</div>
+                <div className="contact-details">
+                  <h4>WhatsApp</h4>
+                  <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
+                    Direkt über WhatsApp chatten
+                  </a>
+                  <p>Schnelle Antworten innerhalb von Minuten</p>
+                </div>
+              </div>
+              
+              <div className="contact-method">
+                <div className="contact-icon">📧</div>
+                <div className="contact-details">
+                  <h4>E-Mail</h4>
+                  <a href="mailto:hassanalmohamad47@gmail.com">hassanalmohamad47@gmail.com</a>
+                  <p>Detaillierte Anfragen und Angebote</p>
+                </div>
+              </div>
+              
+              <div className="contact-method">
+                <div className="contact-icon">📍</div>
+                <div className="contact-details">
+                  <h4>Adresse</h4>
+                  <p>Amendestr 12<br />13409 Berlin</p>
+                  <p>Deutschland</p>
+                </div>
+              </div>
             </div>
             
             <div className="emergency-contact">
-              <h4>🚨 Notfall-Service</h4>
-              <p>Für dringende Anfragen außerhalb der Geschäftszeiten:</p>
-              <a href="tel:+491772277318" className="emergency-btn">
-                📞 24/7 Notfall-Hotline
+              <h4>🚨 Notfall-Hotline</h4>
+              <p>Für dringende Umzüge außerhalb der Geschäftszeiten:</p>
+              <a href="tel:+491772277318" className="emergency-phone">
+                +49 177 227 731 8
               </a>
             </div>
           </div>
         </div>
         
         <div className="map-section">
-          <h3>Unser Servicegebiet</h3>
+          <h3>Unser Standort</h3>
           <div className="map-placeholder">
-            <div className="map-content">
-              <div className="location-marker">
-                <span className="marker-icon">📍</span>
-                <span className="marker-text">SaveMove Umzüge</span>
-              </div>
-              <p>Wir bieten unsere Dienstleistungen in ganz Deutschland an.</p>
-            </div>
+            <p>📍 Berlin, Deutschland</p>
+            <p>Wir sind in ganz Deutschland tätig und kommen gerne zu Ihnen!</p>
           </div>
         </div>
       </div>
